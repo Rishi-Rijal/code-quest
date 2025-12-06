@@ -39,10 +39,40 @@ const onBoardUser = async() => {
     } catch (error) {
         return {
             success: false,
-            message: "Error onboarding user",
+            message: (error as Error)?.message || "Error onboarding user",
             user: null
         }
     }
 }
 
-export { onBoardUser };
+const currentUserRole = async () => {
+    try {
+        const user = await currentUser();
+        if (!user) {
+            return {
+                success: false,
+                message: "No user found",
+                role: null,
+            }
+        }
+        const { id } = user;
+
+        const userRole = await db.user.findUnique({
+            where: { clerkId: id },
+            select: { role: true },
+        });
+        return {
+            success: true,
+            message: "User role fetched successfully",
+            role: userRole?.role || null,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error)?.message || "Error fetching user role",
+            role: null,
+        };
+    }
+}
+
+export { onBoardUser, currentUserRole };
