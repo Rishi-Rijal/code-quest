@@ -8,8 +8,16 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+
+
 model User{
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
   clerkId String @unique
   email String @unique
   firstName String?
@@ -18,9 +26,34 @@ model User{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role Role @default(USER)
+  problems Problem[]
 }
 
-enum Role {
-  USER
-  ADMIN
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Problem{
+  id String @id @default(uuid())
+  title String
+  description String
+  difficulty Difficulty
+  tags String[]
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  examples Json
+  constraints Json
+  hints String?
+  editorial String?
+
+  testCases Json
+  codeSnippets Json
+  referenceSolution Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
