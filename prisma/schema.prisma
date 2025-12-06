@@ -10,6 +10,17 @@ datasource db {
 
 model User{
   id Int @id @default(autoincrement())
-  name String
+  clerkId String @unique
   email String @unique
+  firstName String?
+  lastName String?
+  imageUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role Role @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }
